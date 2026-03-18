@@ -1,74 +1,43 @@
-# 步骤2：缓存改为maven
-- name: Set up JDK 17
-  uses: actions/setup-java@v4
-  with:
-    java-version: '17'
-    distribution: 'temurin'
-    cache: maven  # 替换gradle为maven
-
-# 移除「Grant Execute Permission for Gradlew」步骤（Maven无需）
-
-# 步骤4：编译命令改为Maven
-- name: Build with Maven
-  run: mvn clean package
-
-# 步骤5：路径改为Maven默认输出
-path: |
-  ./target/*.jar
-  !./target/*-sources.jar
-  !./target/*-javadoc.jar
-```{insert\_element\_0\_}### 一、错误根源分析
-提示 `A sequence was not expected`（不期望出现序列），核心原因是 **YAML 语法结构错误**：
-GitHub Actions 工作流的顶层必须是「键值对」（如 `name:`/`on:`/`jobs:`），但你的文件第 2 行意外出现了「序列标记（`-`）」，或缩进/层级混乱导致解析失败。
-
-### 二、修正后的完整配置文件
-替换 `.github/workflows/1.yml` 为以下内容（语法严格合规，适配 Folia 插件编译）：
-
-```yaml
-# 1. 工作流名称（顶层键值对，无多余-）
+# 工作流名称（顶层合法键值对，无多余字符）
 name: Auto Build ExcellentCrates (Folia)
 
-# 2. 触发条件（顶层键值对，结构正确）
+# 触发条件（顶层键值对，结构合规）
 on:
   push:
-    branches: [ folia-feat ]  # 推送到该分支触发
+    branches: [ folia-feat ]
   pull_request:
-    branches: [ folia-feat ]  # PR到该分支触发
-  workflow_dispatch:          # 手动触发（调试用）
+    branches: [ folia-feat ]
+  workflow_dispatch:
 
-# 3. 任务定义（核心顶层键值对）
+# 任务定义（核心顶层键值对）
 jobs:
-  # 子任务：构建插件
   build:
-    runs-on: ubuntu-latest  # 构建环境：Ubuntu最新版
-    # 子步骤（序列，必须在jobs.build下，用-开头）
+    runs-on: ubuntu-latest
     steps:
-      # 步骤1：检出仓库代码
+      # 步骤1：检出代码
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 步骤2：配置JDK 17（Folia强制要求）
+      # 步骤2：配置JDK 17（适配Maven缓存）
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle  # 若用Maven则改为maven
+          cache: maven
 
-      # 步骤3：赋予Gradle执行权限（仅Gradle项目需要）
-      - name: Grant Execute Permission for Gradlew
-        run: chmod +x ./gradlew
+      # 步骤3：Maven编译构建（无Gradle相关步骤）
+      - name: Build with Maven
+        run: mvn clean package
 
-      # 步骤4：编译构建JAR
-      - name: Build with Gradle
-        run: ./gradlew build --no-daemon  # Maven项目替换为：mvn clean package
-
-      # 步骤5：上传编译产物（JAR）
+      # 步骤4：上传产物（Maven默认路径）
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ExcellentCrates-Folia-JAR
           path: |
-            ./build/libs/*.jar  # Gradle输出路径（Maven改为./target/*.jar）
+            ./target/*.jar
+            !./target/*-sources.jar
+            !./target/*-javadoc.jar
