@@ -1,0 +1,20 @@
+# 步骤2：缓存改为maven
+- name: 配置JDK 17
+  uses: actions/setup-java@v4
+  with:
+    java-version: '17'
+    distribution: 'temurin'
+    cache: maven # 替换为maven
+
+# 移除「赋予Gradle执行权限」步骤
+# 步骤4：替换为Maven编译命令
+- name: 编译构建JAR文件
+  run: mvn clean package
+
+# 步骤5：调整JAR输出路径（Maven默认）
+- name: 上传构建产物
+  uses: actions/upload-artifact@v4
+  with:
+    name: ExcellentCrates-Folia-Build
+    path: |
+      ./target/*.jar
