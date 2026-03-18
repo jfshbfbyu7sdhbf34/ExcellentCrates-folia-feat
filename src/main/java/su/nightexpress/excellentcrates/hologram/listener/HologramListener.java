@@ -19,6 +19,10 @@ public class HologramListener extends AbstractListener<CratesPlugin> {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onQuit(PlayerQuitEvent event) {
+<<<<<<< HEAD
         this.manager.handleQuit(event.getPlayer());
+=======
+        this.manager.removeForViewer(event.getPlayer());
+>>>>>>> upstream/master
     }
 }

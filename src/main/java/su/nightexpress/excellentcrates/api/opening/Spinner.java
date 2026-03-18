@@ -20,7 +20,11 @@ public interface Spinner {
 
     long getTickCount();
 
+<<<<<<< HEAD
     boolean isTickTime();
+=======
+    boolean isSpinTime();
+>>>>>>> upstream/master
 
     @NotNull String getId();
 
@@ -30,9 +34,15 @@ public interface Spinner {
 
     int getTotalSpins();
 
+<<<<<<< HEAD
     long getCurrentSpins();
 
     void setCurrentSpins(long spins);
+=======
+    long getStepCount();
+
+    void setStepCount(long spins);
+>>>>>>> upstream/master
 
     boolean hasSpin();
 }

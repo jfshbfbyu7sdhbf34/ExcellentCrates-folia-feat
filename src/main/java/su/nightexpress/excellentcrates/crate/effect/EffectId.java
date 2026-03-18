@@ -12,4 +12,8 @@ public class EffectId {
     public static final String TORNADO = "tornado";
     public static final String VORTEX  = "vortex";
     public static final String SIMPLE  = "simple";
+<<<<<<< HEAD
+=======
+    public static final String DUMMY = "dummy";
+>>>>>>> upstream/master
 }

@@ -2,6 +2,10 @@ package su.nightexpress.excellentcrates;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+<<<<<<< HEAD
+=======
+import su.nightexpress.excellentcrates.api.addon.CratesAddon;
+>>>>>>> upstream/master
 import su.nightexpress.excellentcrates.crate.CrateManager;
 import su.nightexpress.excellentcrates.key.KeyManager;
 import su.nightexpress.excellentcrates.user.CrateUser;
@@ -18,12 +22,37 @@ public class CratesAPI {
     static void clear() {
         plugin = null;
     }
+<<<<<<< HEAD
 
     @NotNull
     public static CratesPlugin getPlugin() {
         return plugin;
     }
 
+=======
+    
+    public static boolean isLoaded() {
+        return plugin != null;
+    }
+
+    @NotNull
+    @Deprecated
+    public static CratesPlugin getPlugin() {
+        return plugin();
+    }
+
+    @NotNull
+    public static CratesPlugin plugin() {
+        if (plugin == null) throw new IllegalStateException("The API is not yet loaded!");
+        
+        return plugin;
+    }
+
+    public static void registerAddon(@NotNull CratesAddon addon) {
+        plugin().registerAddon(addon);
+    }
+
+>>>>>>> upstream/master
     @NotNull
     public static CrateUser getUserData(@NotNull Player player) {
         return plugin.getUserManager().getOrFetch(player);

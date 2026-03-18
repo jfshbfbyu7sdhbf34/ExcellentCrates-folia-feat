@@ -1,16 +1,32 @@
 package su.nightexpress.excellentcrates.editor.key;
 
 import org.bukkit.Material;
+<<<<<<< HEAD
+=======
+import org.bukkit.entity.Player;
+>>>>>>> upstream/master
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.MenuType;
 import org.jetbrains.annotations.NotNull;
 import su.nightexpress.excellentcrates.CratesPlugin;
+<<<<<<< HEAD
 import su.nightexpress.excellentcrates.config.EditorLang;
 import su.nightexpress.excellentcrates.config.Lang;
 import su.nightexpress.excellentcrates.key.CrateKey;
 import su.nightexpress.excellentcrates.key.KeyManager;
 import su.nightexpress.nightcore.ui.dialog.Dialog;
+=======
+import su.nightexpress.excellentcrates.config.Lang;
+import su.nightexpress.excellentcrates.dialog.DialogRegistry;
+import su.nightexpress.excellentcrates.key.dialog.KeyDialogs;
+import su.nightexpress.excellentcrates.key.CrateKey;
+import su.nightexpress.excellentcrates.key.KeyManager;
+import su.nightexpress.nightcore.core.config.CoreLang;
+import su.nightexpress.nightcore.locale.LangContainer;
+import su.nightexpress.nightcore.locale.LangEntry;
+import su.nightexpress.nightcore.locale.entry.IconLocale;
+>>>>>>> upstream/master
 import su.nightexpress.nightcore.ui.menu.MenuViewer;
 import su.nightexpress.nightcore.ui.menu.data.Filled;
 import su.nightexpress.nightcore.ui.menu.data.MenuFiller;
@@ -21,16 +37,49 @@ import su.nightexpress.nightcore.util.bukkit.NightItem;
 import java.util.Comparator;
 import java.util.stream.IntStream;
 
+<<<<<<< HEAD
 public class KeyListMenu extends LinkedMenu<CratesPlugin, KeyManager> implements Filled<CrateKey> {
 
     public KeyListMenu(@NotNull CratesPlugin plugin) {
         super(plugin, MenuType.GENERIC_9X5, Lang.EDITOR_TITLE_KEY_LIST.getString());
 
         this.addItem(MenuItem.buildReturn(this, 39, (viewer, event) -> {
+=======
+import static su.nightexpress.excellentcrates.Placeholders.*;
+import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.GREEN;
+
+public class KeyListMenu extends LinkedMenu<CratesPlugin, KeyManager> implements Filled<CrateKey>, LangContainer {
+
+    private static final IconLocale LOCALE_CREATION = LangEntry.iconBuilder("Editor.Button.Keys.Create")
+        .accentColor(GREEN)
+        .name("New Key")
+        .appendInfo("Use this button to create", "brand new keys!").br()
+        .appendClick("Click to create")
+        .build();
+
+    private static final IconLocale LOCALE_KEY = LangEntry.iconBuilder("Editor.Button.Keys.Key")
+        .rawName(KEY_NAME)
+        .appendCurrent("Status", GENERIC_INSPECTION)
+        .appendCurrent("ID", KEY_ID)
+        .appendCurrent("Virtual", GENERIC_STATE)
+        .br()
+        .appendClick("Click to edit")
+        .build();
+
+    private final DialogRegistry dialogs;
+
+    public KeyListMenu(@NotNull CratesPlugin plugin, @NotNull DialogRegistry dialogs) {
+        super(plugin, MenuType.GENERIC_9X5, Lang.EDITOR_TITLE_KEY_LIST.text());
+        this.dialogs = dialogs;
+        this.plugin.injectLang(this);
+
+        this.addItem(MenuItem.buildReturn(this, 40, (viewer, event) -> {
+>>>>>>> upstream/master
             this.runNextTick(() -> this.plugin.getEditorManager().openEditor(viewer.getPlayer()));
         }));
         this.addItem(MenuItem.buildNextPage(this, 44));
         this.addItem(MenuItem.buildPreviousPage(this, 36));
+<<<<<<< HEAD
 
         this.addItem(Material.ANVIL, EditorLang.KEY_CREATE, 41, (viewer, event, manager) -> {
             this.handleInput(Dialog.builder(viewer, Lang.EDITOR_ENTER_CRATE_ID, input -> {
@@ -40,6 +89,14 @@ public class KeyListMenu extends LinkedMenu<CratesPlugin, KeyManager> implements
                 }
                 return true;
             }));
+=======
+        this.addItem(MenuItem.background(Material.BLACK_STAINED_GLASS_PANE, IntStream.range(36, 45).toArray()));
+        this.addItem(MenuItem.background(Material.GRAY_STAINED_GLASS_PANE, IntStream.range(0, 36).toArray()));
+
+        this.addItem(Material.ANVIL, LOCALE_CREATION, 42, (viewer, event, manager) -> {
+            Player player = viewer.getPlayer();
+            this.dialogs.show(player, KeyDialogs.CREATION, manager, () -> this.flush(player));
+>>>>>>> upstream/master
         });
     }
 
@@ -52,9 +109,19 @@ public class KeyListMenu extends LinkedMenu<CratesPlugin, KeyManager> implements
         autoFill.setItems(plugin.getKeyManager().getKeys().stream().sorted(Comparator.comparing(CrateKey::getId)).toList());
         autoFill.setItemCreator(key -> {
             return NightItem.fromItemStack(key.getRawItem())
+<<<<<<< HEAD
                 .localized(EditorLang.KEY_OBJECT)
                 .setHideComponents(true)
                 .replacement(replacer -> replacer.replace(key.replacePlaceholders()));
+=======
+                .hideAllComponents()
+                .localized(LOCALE_KEY)
+                .replacement(replacer -> replacer
+                    .replace(GENERIC_INSPECTION, () -> Lang.inspection(Lang.INSPECTIONS_GENERIC_OVERVIEW, !key.hasProblems()))
+                    .replace(GENERIC_STATE, () -> CoreLang.STATE_YES_NO.get(key.isVirtual()))
+                    .replace(key.replacePlaceholders())
+                );
+>>>>>>> upstream/master
         });
         autoFill.setItemClick(key -> (viewer1, event) -> {
             this.runNextTick(() -> plugin.getEditorManager().openKeyOptions(viewer1.getPlayer(), key));

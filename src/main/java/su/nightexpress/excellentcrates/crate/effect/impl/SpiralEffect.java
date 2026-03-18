@@ -3,7 +3,13 @@ package su.nightexpress.excellentcrates.crate.effect.impl;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+<<<<<<< HEAD
 import su.nightexpress.excellentcrates.crate.effect.CrateEffect;
+=======
+import su.nightexpress.excellentcrates.config.Lang;
+import su.nightexpress.excellentcrates.crate.effect.CrateEffect;
+import su.nightexpress.excellentcrates.crate.effect.EffectId;
+>>>>>>> upstream/master
 import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 public class SpiralEffect extends CrateEffect {
@@ -15,7 +21,17 @@ public class SpiralEffect extends CrateEffect {
     private static final int NUM_POINTS = 50;
 
     public SpiralEffect() {
+<<<<<<< HEAD
         super(1L, NUM_POINTS);
+=======
+        super(EffectId.SPIRAL, 1L, NUM_POINTS);
+    }
+
+    @Override
+    @NotNull
+    public String getName() {
+        return Lang.EFFECT_MODEL_SPIRAL.text();
+>>>>>>> upstream/master
     }
 
     @Override

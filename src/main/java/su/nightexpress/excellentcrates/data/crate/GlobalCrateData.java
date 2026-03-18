@@ -1,6 +1,9 @@
 package su.nightexpress.excellentcrates.data.crate;
 
+<<<<<<< HEAD
 import org.bukkit.Bukkit;
+=======
+>>>>>>> upstream/master
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,20 +20,32 @@ public class GlobalCrateData {
     private String latestOpenerName;
     private String latestRewardId;
 
+<<<<<<< HEAD
     private boolean saveRequired;
+=======
+    private boolean dirty;
+>>>>>>> upstream/master
 
     @NotNull
     public static GlobalCrateData create(@NotNull Crate crate) {
         return new GlobalCrateData(crate.getId(), null, null, null);
     }
 
+<<<<<<< HEAD
     public GlobalCrateData(@NotNull String crateId, @Nullable UUID latestOpenerId, @Nullable String latestOpenerName, @Nullable String latestRewardId) {
+=======
+    public GlobalCrateData(@NotNull String crateId,
+                           @Nullable UUID latestOpenerId,
+                           @Nullable String latestOpenerName,
+                           @Nullable String latestRewardId) {
+>>>>>>> upstream/master
         this.crateId = crateId.toLowerCase();
         this.latestOpenerId = latestOpenerId;
         this.latestOpenerName = latestOpenerName;
         this.latestRewardId = latestRewardId;
     }
 
+<<<<<<< HEAD
     public boolean isSaveRequired() {
         return this.saveRequired;
     }
@@ -47,6 +62,14 @@ public class GlobalCrateData {
         if (player == null) return this.latestOpenerName;
 
         return player.getDisplayName();
+=======
+    public boolean isDirty() {
+        return this.dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+>>>>>>> upstream/master
     }
 
     public void setLatestOpener(@NotNull Player player) {

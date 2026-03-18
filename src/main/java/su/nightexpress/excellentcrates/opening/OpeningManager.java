@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import su.nightexpress.excellentcrates.CratesPlugin;
 import su.nightexpress.excellentcrates.api.opening.Opening;
 import su.nightexpress.excellentcrates.api.opening.OpeningProvider;
+<<<<<<< HEAD
 import su.nightexpress.excellentcrates.config.Config;
 import su.nightexpress.excellentcrates.crate.impl.Crate;
 import su.nightexpress.excellentcrates.crate.impl.CrateSource;
@@ -18,24 +19,47 @@ import su.nightexpress.nightcore.manager.AbstractManager;
 import su.nightexpress.nightcore.universalscheduler.foliaScheduler.FoliaScheduler;
 import su.nightexpress.nightcore.util.FileUtil;
 import su.nightexpress.nightcore.util.StringUtil;
+=======
+import su.nightexpress.excellentcrates.api.opening.ProviderLoader;
+import su.nightexpress.excellentcrates.api.opening.ProviderSupplier;
+import su.nightexpress.excellentcrates.config.Config;
+import su.nightexpress.excellentcrates.crate.cost.Cost;
+import su.nightexpress.excellentcrates.crate.impl.Crate;
+import su.nightexpress.excellentcrates.crate.impl.CrateSource;
+import su.nightexpress.excellentcrates.opening.world.provider.DummyProvider;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.manager.AbstractManager;
+import su.nightexpress.nightcore.util.FileUtil;
+>>>>>>> upstream/master
 
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+<<<<<<< HEAD
 import java.util.function.Consumer;
 import java.util.function.Function;
+=======
+>>>>>>> upstream/master
 
 public class OpeningManager extends AbstractManager<CratesPlugin> {
 
     private final Map<String, OpeningProvider> providerByIdMap;
+<<<<<<< HEAD
     private final Map<UUID, Opening>           openingByPlayerId;
+=======
+    private final Map<UUID, Opening>           openingByPlayerMap;
+>>>>>>> upstream/master
 
     private final DummyProvider dummyProvider;
 
     public OpeningManager(@NotNull CratesPlugin plugin) {
         super(plugin);
         this.providerByIdMap = new HashMap<>();
+<<<<<<< HEAD
         this.openingByPlayerId = new ConcurrentHashMap<>();
+=======
+        this.openingByPlayerMap = new ConcurrentHashMap<>();
+>>>>>>> upstream/master
         this.dummyProvider = new DummyProvider(plugin);
     }
 
@@ -53,6 +77,7 @@ public class OpeningManager extends AbstractManager<CratesPlugin> {
     protected void onShutdown() {
         this.getOpenings().forEach(Opening::stop);
         this.providerByIdMap.clear();
+<<<<<<< HEAD
         this.openingByPlayerId.clear();
     }
 
@@ -157,6 +182,73 @@ public class OpeningManager extends AbstractManager<CratesPlugin> {
 
     public void loadProvider(@NotNull String id, @NotNull OpeningProvider provider) {
         this.providerByIdMap.put(id.toLowerCase(), provider);
+=======
+        this.openingByPlayerMap.clear();
+    }
+
+    @NotNull
+    private String getDirectoryPath(@NotNull String dirName) {
+        return this.plugin.getDataFolder() + dirName;
+    }
+
+    private void loadDefaults() {
+        File dir = new File(this.getDirectoryPath(Config.DIR_OPENINGS));
+        if (dir.exists()) return;
+
+        this.loadProvider("csgo", Config.DIR_OPENINGS_INVENTORY, OpeningUtils::setupCSGO);
+        this.loadProvider("enclosing", Config.DIR_OPENINGS_INVENTORY, OpeningUtils::setupEnclosing);
+        this.loadProvider("mystery", Config.DIR_OPENINGS_INVENTORY, OpeningUtils::setupMystery);
+        this.loadProvider("roulette", Config.DIR_OPENINGS_INVENTORY, OpeningUtils::setupRoulette);
+        this.loadProvider("storm", Config.DIR_OPENINGS_INVENTORY, OpeningUtils::setupStorm);
+
+        this.loadProvider("simple_roll", Config.DIR_OPENINGS_SIMPLE_ROLL, OpeningUtils::createSimpleRoll);
+
+        this.loadProvider("selective_1", Config.DIR_OPENINGS_SELECTABLE, OpeningUtils::createSelectableSingle);
+        this.loadProvider("selective_3", Config.DIR_OPENINGS_SELECTABLE, OpeningUtils::createSelectableTriple);
+    }
+
+    public void loadProviders() {
+        // Load providers stored in the openings directory by native or externally added loaders.
+        for (ProviderLoader loader : ProviderRegistry.getLoaders()) {
+            this.loadProviders(loader);
+        }
+
+        // Load externally added independend opening providers.
+        for (OpeningProvider provider : ProviderRegistry.getProviders()) {
+            this.loadProvider(provider);
+        }
+
+        this.plugin.info("Loaded " + this.providerByIdMap.size() + " crate openings.");
+    }
+
+    public void loadProviders(@NotNull ProviderLoader loader) {
+        String dirName = loader.getDirectory();
+        ProviderSupplier supplier = loader.getSupplier();
+
+        for (File file : FileUtil.getConfigFiles(this.getDirectoryPath(dirName))) {
+            this.loadProvider(file, supplier);
+        }
+    }
+
+    public void loadProvider(@NotNull String id, @NotNull String dirName, @NotNull ProviderSupplier supplier) {
+        File file = new File(this.getDirectoryPath(dirName), FileConfig.withExtension(id));
+        this.loadProvider(file, supplier);
+    }
+
+    public void loadProvider(@NotNull File file, @NotNull ProviderSupplier supplier) {
+        FileConfig config = new FileConfig(file);
+        String name = FileConfig.getName(file);
+
+        OpeningProvider provider = supplier.supply(this.plugin, name);
+        provider.load(config);
+        config.saveChanges();
+
+        this.loadProvider(provider);
+    }
+
+    public void loadProvider(@NotNull OpeningProvider provider) {
+        this.providerByIdMap.put(provider.getId(), provider);
+>>>>>>> upstream/master
     }
 
     @NotNull
@@ -181,21 +273,37 @@ public class OpeningManager extends AbstractManager<CratesPlugin> {
 
     @NotNull
     public Map<UUID, Opening> getOpeningByPlayerIdMap() {
+<<<<<<< HEAD
         return this.openingByPlayerId;
+=======
+        return this.openingByPlayerMap;
+>>>>>>> upstream/master
     }
 
     @NotNull
     public Set<Opening> getOpenings() {
+<<<<<<< HEAD
         return new HashSet<>(this.openingByPlayerId.values());
+=======
+        return new HashSet<>(this.openingByPlayerMap.values());
+>>>>>>> upstream/master
     }
 
     @Nullable
     public Opening getOpening(@NotNull Player player) {
+<<<<<<< HEAD
         return this.openingByPlayerId.get(player.getUniqueId());
     }
 
     public void tickOpenings() {
         this.getOpenings().forEach(opening -> new FoliaScheduler(plugin).runTask(opening.getPlayer(), opening::tick));
+=======
+        return this.openingByPlayerMap.get(player.getUniqueId());
+    }
+
+    public void tickOpenings() {
+        this.getOpenings().forEach(Opening::tick);
+>>>>>>> upstream/master
     }
 
     public boolean isOpening(@NotNull Player player) {
@@ -211,14 +319,22 @@ public class OpeningManager extends AbstractManager<CratesPlugin> {
 
     @Nullable
     public Opening removeOpening(@NotNull Player player) {
+<<<<<<< HEAD
         return this.openingByPlayerId.remove(player.getUniqueId());
     }
 
     public boolean isOpeningAvailable(@NotNull Player player, @NotNull CrateSource source) {
+=======
+        return this.openingByPlayerMap.remove(player.getUniqueId());
+    }
+
+    public boolean isOpeningAvailable(@NotNull Player player) {
+>>>>>>> upstream/master
         return !this.isOpening(player);
     }
 
     @NotNull
+<<<<<<< HEAD
     public Opening createOpening(@NotNull Player player, @NotNull CrateSource source, @Nullable CrateKey key) {
         Crate crate = source.getCrate();
         OpeningProvider provider = null;
@@ -235,6 +351,24 @@ public class OpeningManager extends AbstractManager<CratesPlugin> {
         this.openingByPlayerId.putIfAbsent(player.getUniqueId(), opening);
 
         opening.run(); // Start ticking
+=======
+    public Opening createOpening(@NotNull Player player, @NotNull CrateSource source, @Nullable Cost cost) {
+        Crate crate = source.getCrate();
+        OpeningProvider provider = null;
+
+        if (crate.isOpeningEnabled()) {
+            provider = this.getProviderById(crate.getOpeningId());
+        }
+        if (provider == null) provider = this.dummyProvider;
+
+        return provider.createOpening(player, source, cost);
+    }
+
+    public void startOpening(@NotNull Player player, @NotNull Opening opening, boolean instaRoll) {
+        this.openingByPlayerMap.putIfAbsent(player.getUniqueId(), opening);
+
+        opening.start(); // Start ticking
+>>>>>>> upstream/master
 
         if (instaRoll) opening.instaRoll();
     }

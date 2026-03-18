@@ -5,8 +5,16 @@ import su.nightexpress.excellentcrates.CratesPlugin;
 import su.nightexpress.excellentcrates.config.Lang;
 import su.nightexpress.excellentcrates.crate.impl.Crate;
 import su.nightexpress.excellentcrates.key.CrateKey;
+<<<<<<< HEAD
 import su.nightexpress.nightcore.command.experimental.argument.CommandArgument;
 import su.nightexpress.nightcore.command.experimental.builder.ArgumentBuilder;
+=======
+import su.nightexpress.nightcore.commands.Commands;
+import su.nightexpress.nightcore.commands.builder.ArgumentNodeBuilder;
+import su.nightexpress.nightcore.commands.exceptions.CommandSyntaxException;
+
+import java.util.Optional;
+>>>>>>> upstream/master
 
 public class CommandArguments {
 
@@ -20,6 +28,7 @@ public class CommandArguments {
     public static final String WORLD  = "world";
 
     @NotNull
+<<<<<<< HEAD
     public static ArgumentBuilder<Crate> forCrate(@NotNull CratesPlugin plugin) {
         return CommandArgument.builder(CRATE, (string, context) -> plugin.getCrateManager().getCrateById(string))
             .localized(Lang.COMMAND_ARGUMENT_NAME_CRATE)
@@ -33,5 +42,18 @@ public class CommandArguments {
             .localized(Lang.COMMAND_ARGUMENT_NAME_KEY)
             .customFailure(Lang.ERROR_COMMAND_INVALID_KEY_ARGUMENT)
             .withSamples(context -> plugin.getKeyManager().getKeyIds());
+=======
+    public static ArgumentNodeBuilder<Crate> forCrate(@NotNull CratesPlugin plugin) {
+        return Commands.argument(CRATE, (context, string) -> Optional.ofNullable(plugin.getCrateManager().getCrateById(string)).orElseThrow(() -> CommandSyntaxException.custom(Lang.ERROR_COMMAND_INVALID_CRATE_ARGUMENT)))
+            .localized(Lang.COMMAND_ARGUMENT_NAME_CRATE)
+            .suggestions((reader, context) -> plugin.getCrateManager().getCrateIds());
+    }
+
+    @NotNull
+    public static ArgumentNodeBuilder<CrateKey> forKey(@NotNull CratesPlugin plugin) {
+        return Commands.argument(KEY, (context, string) -> Optional.ofNullable(plugin.getKeyManager().getKeyById(string)).orElseThrow(() -> CommandSyntaxException.custom(Lang.ERROR_COMMAND_INVALID_KEY_ARGUMENT)))
+            .localized(Lang.COMMAND_ARGUMENT_NAME_KEY)
+            .suggestions((reader, context) -> plugin.getKeyManager().getKeyIds());
+>>>>>>> upstream/master
     }
 }

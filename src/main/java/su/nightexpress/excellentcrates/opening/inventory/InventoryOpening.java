@@ -9,21 +9,35 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.excellentcrates.CratesPlugin;
 import su.nightexpress.excellentcrates.api.opening.Spinner;
+<<<<<<< HEAD
 import su.nightexpress.excellentcrates.crate.impl.CrateSource;
 import su.nightexpress.excellentcrates.key.CrateKey;
 import su.nightexpress.excellentcrates.opening.AbstractOpening;
 import su.nightexpress.excellentcrates.opening.inventory.spinner.SpinnerData;
 import su.nightexpress.excellentcrates.opening.inventory.spinner.SpinnerProvider;
+=======
+import su.nightexpress.excellentcrates.crate.cost.Cost;
+import su.nightexpress.excellentcrates.crate.impl.CrateSource;
+import su.nightexpress.excellentcrates.opening.AbstractOpening;
+import su.nightexpress.excellentcrates.opening.inventory.spinner.SpinnerHolder;
+>>>>>>> upstream/master
 import su.nightexpress.excellentcrates.opening.inventory.spinner.SpinnerType;
 import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< HEAD
 public abstract class InventoryOpening extends AbstractOpening {
 
     protected final InvOpeningProvider config;
     protected final InventoryView      view;
+=======
+public class InventoryOpening extends AbstractOpening {
+
+    protected final InventoryProvider config;
+    protected final InventoryView     view;
+>>>>>>> upstream/master
     protected final List<Spinner>    spinners;
 
     private boolean launched;
@@ -31,12 +45,21 @@ public abstract class InventoryOpening extends AbstractOpening {
     private long    launchTicks;
 
     public InventoryOpening(@NotNull CratesPlugin plugin,
+<<<<<<< HEAD
                             @NotNull InvOpeningProvider config,
                             @NotNull InventoryView view,
                             @NotNull Player player,
                             @NotNull CrateSource source,
                             @Nullable CrateKey key) {
         super(plugin, player, source, key);
+=======
+                            @NotNull InventoryProvider config,
+                            @NotNull InventoryView view,
+                            @NotNull Player player,
+                            @NotNull CrateSource source,
+                            @Nullable Cost cost) {
+        super(plugin, player, source, cost);
+>>>>>>> upstream/master
         this.view = view;
         this.config = config;
         this.spinners = new ArrayList<>();
@@ -44,6 +67,10 @@ public abstract class InventoryOpening extends AbstractOpening {
         this.launchTicks = 0L;
     }
 
+<<<<<<< HEAD
+=======
+    @Deprecated
+>>>>>>> upstream/master
     public int[] parseSlots(@NotNull String str) {
         return NumberUtil.getIntArray(str);
     }
@@ -54,12 +81,16 @@ public abstract class InventoryOpening extends AbstractOpening {
     }
 
     public void launch() {
+<<<<<<< HEAD
         this.launched = true;
         this.launchTicks = 0L;
 
         for (SpinnerType type : SpinnerType.values()) {
             this.config.getSpinnersToRun(type).forEach(data -> this.runSpinner(data, type));
         }
+=======
+
+>>>>>>> upstream/master
     }
 
     public void onClick(@NotNull InventoryClickEvent event) {
@@ -79,6 +110,14 @@ public abstract class InventoryOpening extends AbstractOpening {
         });
 
         //this.player.openInventory(this.view);
+<<<<<<< HEAD
+=======
+
+        this.launched = true;
+        this.launchTicks = 0L;
+
+        this.config.getSpinners().forEach(this::runSpinner);
+>>>>>>> upstream/master
     }
 
     @Override
@@ -130,15 +169,21 @@ public abstract class InventoryOpening extends AbstractOpening {
         return this.launchTicks <= maxTicks;
     }
 
+<<<<<<< HEAD
     protected abstract void onInstaRoll();
 
+=======
+>>>>>>> upstream/master
     @Override
     public void instaRoll() {
         this.closeTicks = 0L; // Do not schedule inventory closing.
         this.setRefundable(false); // Do not return keys.
 
+<<<<<<< HEAD
         this.onInstaRoll();
 
+=======
+>>>>>>> upstream/master
         if (!this.isLaunched()) {
             this.launch();
         }
@@ -156,6 +201,7 @@ public abstract class InventoryOpening extends AbstractOpening {
     }
 
 
+<<<<<<< HEAD
     public void runSpinner(@NotNull SpinnerData data, @NotNull SpinnerType type) {
         SpinnerProvider provider = this.config.getSpinnerProvider(type, data.getSpinnerId());
         if (provider == null) return;
@@ -165,6 +211,14 @@ public abstract class InventoryOpening extends AbstractOpening {
         }
 
         Spinner spinner = provider.createSpinner(this.plugin, data, this);
+=======
+    public void runSpinner(@NotNull SpinnerHolder holder) {
+        if (holder.getType() == SpinnerType.REWARD) {
+            this.setRefundable(false);
+        }
+
+        Spinner spinner = holder.createSpinner(this.plugin, this);
+>>>>>>> upstream/master
         this.addSpinner(spinner);
     }
 
@@ -174,7 +228,11 @@ public abstract class InventoryOpening extends AbstractOpening {
     }
 
     @NotNull
+<<<<<<< HEAD
     public InvOpeningProvider getConfig() {
+=======
+    public InventoryProvider getConfig() {
+>>>>>>> upstream/master
         return this.config;
     }
 

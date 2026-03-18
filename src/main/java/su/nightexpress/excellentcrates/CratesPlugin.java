@@ -1,6 +1,7 @@
 package su.nightexpress.excellentcrates;
 
 import org.jetbrains.annotations.NotNull;
+<<<<<<< HEAD
 import org.jetbrains.annotations.Nullable;
 import su.nightexpress.excellentcrates.command.basic.BaseCommands;
 import su.nightexpress.excellentcrates.config.*;
@@ -26,6 +27,42 @@ import su.nightexpress.nightcore.util.Plugins;
 import java.util.function.Consumer;
 
 public class CratesPlugin extends NightPlugin implements ImprovedCommands {
+=======
+import su.nightexpress.excellentcrates.api.addon.CratesAddon;
+import su.nightexpress.excellentcrates.command.BaseCommands;
+import su.nightexpress.excellentcrates.config.Config;
+import su.nightexpress.excellentcrates.config.Keys;
+import su.nightexpress.excellentcrates.config.Lang;
+import su.nightexpress.excellentcrates.config.Perms;
+import su.nightexpress.excellentcrates.crate.CrateManager;
+import su.nightexpress.excellentcrates.crate.cost.type.impl.EcoCostType;
+import su.nightexpress.excellentcrates.data.DataHandler;
+import su.nightexpress.excellentcrates.data.DataManager;
+import su.nightexpress.excellentcrates.dialog.DialogRegistry;
+import su.nightexpress.excellentcrates.editor.EditorManager;
+import su.nightexpress.excellentcrates.hologram.HologramManager;
+import su.nightexpress.excellentcrates.hooks.impl.PlaceholderHook;
+import su.nightexpress.excellentcrates.key.KeyManager;
+import su.nightexpress.excellentcrates.opening.OpeningManager;
+import su.nightexpress.excellentcrates.opening.ProviderRegistry;
+import su.nightexpress.excellentcrates.registry.CratesRegistries;
+import su.nightexpress.excellentcrates.user.UserManager;
+import su.nightexpress.nightcore.NightPlugin;
+import su.nightexpress.nightcore.commands.command.NightCommand;
+import su.nightexpress.nightcore.config.PluginDetails;
+import su.nightexpress.nightcore.util.Plugins;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+public class CratesPlugin extends NightPlugin {
+
+    private final List<CratesAddon> addons = new ArrayList<>();
+
+    private DialogRegistry dialogRegistry;
+>>>>>>> upstream/master
 
     private DataHandler dataHandler;
     private DataManager dataManager;
@@ -35,21 +72,31 @@ public class CratesPlugin extends NightPlugin implements ImprovedCommands {
     private OpeningManager  openingManager;
     private KeyManager      keyManager;
     private CrateManager    crateManager;
+<<<<<<< HEAD
     //private MenuManager     menuManager;
     private EditorManager   editorManager;
 
     private CrateLogger     crateLogger;
+=======
+    private EditorManager   editorManager;
+
+    private CrateLogger crateLogger;
+>>>>>>> upstream/master
 
     @Override
     @NotNull
     protected PluginDetails getDefaultDetails() {
         return PluginDetails.create("Crates", new String[]{"crates", "ecrates", "excellentcrates", "crate", "case", "cases"})
             .setConfigClass(Config.class)
+<<<<<<< HEAD
             .setLangClass(Lang.class)
+=======
+>>>>>>> upstream/master
             .setPermissionsClass(Perms.class);
     }
 
     @Override
+<<<<<<< HEAD
     public void enable() {
         this.loadAPI();
 
@@ -67,6 +114,32 @@ public class CratesPlugin extends NightPlugin implements ImprovedCommands {
         this.loadHolograms();
 
         this.crateLogger = new CrateLogger(this);
+=======
+    protected boolean disableCommandManager() {
+        return true;
+    }
+
+    @Override
+    protected void onStartup() {
+        CratesAPI.load(this);
+        Keys.load(this);
+    }
+
+    @Override
+    protected void addRegistries() {
+        this.registerLang(Lang.class);
+    }
+
+    @Override
+    public void enable() {
+        this.crateLogger = new CrateLogger(this);
+        this.dialogRegistry = new DialogRegistry(this);
+
+        ProviderRegistry.load();
+        CratesRegistries.load(this);
+        CratesRegistries.registerCostType(new EcoCostType(this, this.dialogRegistry));
+        this.proceedAddons(CratesAddon::onInit);
+>>>>>>> upstream/master
 
         this.dataHandler = new DataHandler(this);
         this.dataHandler.setup();
@@ -77,6 +150,7 @@ public class CratesPlugin extends NightPlugin implements ImprovedCommands {
         this.userManager = new UserManager(this, this.dataHandler);
         this.userManager.setup();
 
+<<<<<<< HEAD
         this.openingManager = new OpeningManager(this);
         this.openingManager.setup();
 
@@ -90,6 +164,23 @@ public class CratesPlugin extends NightPlugin implements ImprovedCommands {
 //        this.menuManager.setup();
 
         this.editorManager = new EditorManager(this);
+=======
+        if (Config.HOLOGRAMS_ENABLED.get()) {
+            this.hologramManager = new HologramManager(this);
+            this.hologramManager.setup();
+        }
+
+        this.openingManager = new OpeningManager(this);
+        this.openingManager.setup();
+
+        this.keyManager = new KeyManager(this, this.dialogRegistry);
+        this.keyManager.setup();
+
+        this.crateManager = new CrateManager(this, this.dialogRegistry);
+        this.crateManager.setup();
+
+        this.editorManager = new EditorManager(this, this.dialogRegistry);
+>>>>>>> upstream/master
         this.editorManager.setup();
 
         this.dataHandler.updateRewardLimits();
@@ -97,6 +188,7 @@ public class CratesPlugin extends NightPlugin implements ImprovedCommands {
         if (Plugins.hasPlaceholderAPI()) {
             PlaceholderHook.setup(this);
         }
+<<<<<<< HEAD
     }
 
     private void loadHolograms() {
@@ -118,6 +210,13 @@ public class CratesPlugin extends NightPlugin implements ImprovedCommands {
 
         this.hologramManager = new HologramManager(this, handler);
         this.hologramManager.setup();
+=======
+
+
+
+        this.loadCommands();
+        this.proceedAddons(CratesAddon::onLoad);
+>>>>>>> upstream/master
     }
 
     @Override
@@ -131,16 +230,31 @@ public class CratesPlugin extends NightPlugin implements ImprovedCommands {
         if (this.userManager != null) this.userManager.shutdown();
         if (this.dataManager != null) this.dataManager.shutdown();
         if (this.dataHandler != null) this.dataHandler.shutdown();
+<<<<<<< HEAD
+=======
+        if (this.dialogRegistry != null) this.dialogRegistry.clear();
+>>>>>>> upstream/master
 
         if (Plugins.hasPlaceholderAPI()) {
             PlaceholderHook.shutdown();
         }
 
+<<<<<<< HEAD
         EffectRegistry.clear();
+=======
+        CratesRegistries.clear();
+        ProviderRegistry.clear();
+    }
+
+    @Override
+    protected void onShutdown() {
+        super.onShutdown();
+>>>>>>> upstream/master
         Keys.clear();
         CratesAPI.clear();
     }
 
+<<<<<<< HEAD
     private void loadAPI() {
         CratesAPI.load(this);
         Keys.load(this);
@@ -159,6 +273,32 @@ public class CratesPlugin extends NightPlugin implements ImprovedCommands {
         if (this.hologramManager != null) {
             consumer.accept(this.hologramManager);
         }
+=======
+    private void loadCommands() {
+        this.rootCommand = NightCommand.forPlugin(this, builder -> new BaseCommands(this).load(builder));
+    }
+
+    public void registerAddon(@NotNull CratesAddon addon) {
+        this.addons.add(addon);
+    }
+
+    private void proceedAddons(@NotNull Consumer<CratesAddon> consumer) {
+        this.addons.forEach(consumer);
+    }
+
+    @NotNull
+    public List<CratesAddon> getAddons() {
+        return this.addons;
+    }
+
+    public boolean hasHolograms() {
+        return this.hologramManager != null && this.hologramManager.hasHandler();
+    }
+
+    @NotNull
+    public Optional<HologramManager> getHologramManager() {
+        return Optional.ofNullable(this.hologramManager);
+>>>>>>> upstream/master
     }
 
     @NotNull
@@ -200,6 +340,7 @@ public class CratesPlugin extends NightPlugin implements ImprovedCommands {
     public CrateManager getCrateManager() {
         return this.crateManager;
     }
+<<<<<<< HEAD
 
 //    @NotNull
 //    public MenuManager getMenuManager() {
@@ -210,4 +351,6 @@ public class CratesPlugin extends NightPlugin implements ImprovedCommands {
     public HologramManager getHologramManager() {
         return this.hologramManager;
     }
+=======
+>>>>>>> upstream/master
 }

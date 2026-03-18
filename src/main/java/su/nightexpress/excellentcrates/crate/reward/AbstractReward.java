@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import su.nightexpress.excellentcrates.CratesPlugin;
 import su.nightexpress.excellentcrates.Placeholders;
 import su.nightexpress.excellentcrates.api.crate.Reward;
+<<<<<<< HEAD
 import su.nightexpress.excellentcrates.api.item.ItemProvider;
 import su.nightexpress.excellentcrates.crate.impl.Crate;
 import su.nightexpress.excellentcrates.crate.impl.Rarity;
@@ -17,6 +18,22 @@ import su.nightexpress.nightcore.util.text.NightMessage;
 
 import java.util.HashSet;
 import java.util.List;
+=======
+import su.nightexpress.excellentcrates.crate.impl.Crate;
+import su.nightexpress.excellentcrates.crate.impl.Rarity;
+import su.nightexpress.excellentcrates.crate.limit.CooldownMode;
+import su.nightexpress.excellentcrates.crate.limit.LimitValues;
+import su.nightexpress.excellentcrates.data.reward.RewardData;
+import su.nightexpress.excellentcrates.util.CrateUtils;
+import su.nightexpress.excellentcrates.util.ItemHelper;
+import su.nightexpress.nightcore.bridge.item.AdaptedItem;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.util.placeholder.Replacer;
+import su.nightexpress.nightcore.util.problem.ProblemCollector;
+import su.nightexpress.nightcore.util.problem.ProblemReporter;
+
+import java.util.HashSet;
+>>>>>>> upstream/master
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
@@ -26,6 +43,7 @@ public abstract class AbstractReward implements Reward {
     protected final Crate        crate;
     protected final String       id;
 
+<<<<<<< HEAD
     protected ItemProvider preview;
     protected double       weight;
     protected Rarity      rarity;
@@ -33,6 +51,13 @@ public abstract class AbstractReward implements Reward {
     protected boolean     placeholderApply;
     protected LimitValues playerLimits;
     protected LimitValues globalLimits;
+=======
+    protected AdaptedItem preview;
+    protected double      weight;
+    protected Rarity      rarity;
+    protected boolean     broadcast;
+    protected LimitValues limits;
+>>>>>>> upstream/master
     protected Set<String> ignoredPermissions;
     protected Set<String> requiredPermissions;
 
@@ -43,17 +68,24 @@ public abstract class AbstractReward implements Reward {
 
         this.setWeight(10D);
         this.setRarity(rarity);
+<<<<<<< HEAD
         this.setBroadcast(false);
         this.setPlaceholderApply(false);
 
         this.setPlayerLimits(LimitValues.unlimited());
         this.setGlobalLimits(LimitValues.unlimited());
+=======
+        this.setPreview(ItemHelper.vanilla(CrateUtils.getQuestionStack()));
+        this.setBroadcast(false);
+        this.setLimits(LimitValues.unlimited());
+>>>>>>> upstream/master
         this.setIgnoredPermissions(new HashSet<>());
         this.setRequiredPermissions(new HashSet<>());
     }
 
     @Override
     public void load(@NotNull FileConfig config, @NotNull String path) {
+<<<<<<< HEAD
         this.setPreview(ItemTypes.read(config, path + ".PreviewData"));
         this.setWeight(config.getDouble(path + ".Weight", -1D));
         this.setBroadcast(config.getBoolean(path + ".Broadcast"));
@@ -61,6 +93,28 @@ public abstract class AbstractReward implements Reward {
 
         this.setPlayerLimits(LimitValues.read(config, path + ".Win_Limit.Player"));
         this.setGlobalLimits(LimitValues.read(config, path + ".Win_Limit.Global"));
+=======
+        if (config.contains(path + ".Win_Limit")) {
+            boolean playerEnabled = config.getBoolean(path + ".Win_Limit.Player.Enabled", false);
+            int playerAmount = config.getInt(path + ".Win_Limit.Player.Amount", -1);
+            long playerCooldown = config.getLong(path + ".Win_Limit.Player.Cooldown");
+
+            boolean globalEnabled = config.getBoolean(path + ".Win_Limit.Global.Enabled", false);
+            int  globalAmount = config.getInt(path + ".Win_Limit.Global.Amount", -1);
+            long  globalCooldown = config.getLong(path + ".Win_Limit.Global.Cooldown");
+
+            CooldownMode cooldownType = playerCooldown == -2 || globalCooldown == -2 ? CooldownMode.DAILY : CooldownMode.CUSTOM;
+
+            LimitValues values = new LimitValues(playerEnabled || globalEnabled, cooldownType, globalAmount, playerAmount, globalCooldown, playerCooldown);
+            config.set(path + ".Limits", values);
+            config.remove(path + ".Win_Limit");
+        }
+
+        this.setPreview(ItemHelper.readOrPlaceholder(config, path + ".PreviewData"));
+        this.setWeight(config.getDouble(path + ".Weight", -1D));
+        this.setBroadcast(config.getBoolean(path + ".Broadcast"));
+        this.setLimits(LimitValues.read(config, path + ".Limits"));
+>>>>>>> upstream/master
         this.setIgnoredPermissions(config.getStringSet(path + ".Ignored_For_Permissions"));
         this.setRequiredPermissions(config.getStringSet(path + ".Required_Permissions"));
 
@@ -70,6 +124,7 @@ public abstract class AbstractReward implements Reward {
     @Override
     public void write(@NotNull FileConfig config, @NotNull String path) {
         config.set(path + ".Type", this.getType().name());
+<<<<<<< HEAD
         if (!this.preview.isDummy()) {
             config.remove(path + ".PreviewData"); // Remove leftovers from diffrent ItemProvider settings.
             config.set(path + ".PreviewData", this.preview);
@@ -80,16 +135,26 @@ public abstract class AbstractReward implements Reward {
         config.set(path + ".Placeholder_Apply", this.placeholderApply);
         this.playerLimits.write(config, path + ".Win_Limit.Player");
         this.globalLimits.write(config, path + ".Win_Limit.Global");
+=======
+        config.set(path + ".PreviewData", this.preview);
+        config.set(path + ".Weight", this.weight);
+        config.set(path + ".Rarity", this.rarity.getId());
+        config.set(path + ".Broadcast", this.broadcast);
+        config.set(path + ".Limits", this.limits);
+>>>>>>> upstream/master
         config.set(path + ".Ignored_For_Permissions", this.ignoredPermissions);
         config.set(path + ".Required_Permissions", this.requiredPermissions);
         this.writeAdditional(config, path);
     }
 
+<<<<<<< HEAD
     @Override
     public void save() {
         this.crate.saveReward(this);
     }
 
+=======
+>>>>>>> upstream/master
     protected abstract void loadAdditional(@NotNull FileConfig config, @NotNull String path);
 
     protected abstract void writeAdditional(@NotNull FileConfig config, @NotNull String path);
@@ -102,6 +167,7 @@ public abstract class AbstractReward implements Reward {
 
     @NotNull
     protected Replacer createContentReplacer(@NotNull Player player) {
+<<<<<<< HEAD
         Replacer replacer = Replacer.create();
         if (this.placeholderApply) {
             replacer.replace(this.crate.replacePlaceholders());
@@ -124,11 +190,71 @@ public abstract class AbstractReward implements Reward {
     @Override
     public boolean hasPersonalLimit() {
         return this.playerLimits.isEnabled() && !this.playerLimits.isUnlimitedAmount();
+=======
+        return Replacer.create().replace(this.crate.replacePlaceholders()).replace(this.replacePlaceholders());
+    }
+
+    @Override
+    @NotNull
+    public ProblemReporter collectProblems() {
+        ProblemReporter reporter = new ProblemCollector(this.getId(), this.crate.getPath() + " -> " + this.id);
+
+        this.collectAdditionalProblems(reporter);
+
+        return reporter;
+    }
+
+    protected abstract void collectAdditionalProblems(@NotNull ProblemReporter reporter);
+
+    @Override
+    public boolean hasProblems() {
+        return !this.collectProblems().isEmpty();
+    }
+
+    @Override
+    public boolean isOnCooldown(@NotNull Player player) {
+        if (!this.limits.isEnabled()) return false;
+
+        if (this.limits.hasGlobalCooldown()) {
+            RewardData globalLimit = this.plugin.getDataManager().getRewardLimit(this, null);
+            if (globalLimit != null && globalLimit.isOnCooldown()) return true;
+        }
+
+        if (this.limits.hasPlayerCooldown()) {
+            RewardData playerLimit = this.plugin.getDataManager().getRewardLimit(this, player);
+            return playerLimit != null && playerLimit.isOnCooldown();
+        }
+
+        return false;
+>>>>>>> upstream/master
     }
 
     @Override
     public int getAvailableRolls(@NotNull Player player) {
+<<<<<<< HEAD
         return plugin.getCrateManager().getAvailableRolls(player, this);
+=======
+        RewardData globalLimit = this.plugin.getDataManager().getRewardLimit(this, null);
+        RewardData playerLimit = this.plugin.getDataManager().getRewardLimit(this, player);
+
+        int globalLeft = -1;
+        int playerLeft = -1;
+
+        if (this.limits.isEnabled()) {
+            if (this.limits.isGlobalAmountLimited()) {
+                globalLeft = globalLimit == null ? this.limits.getGlobalAmount() : Math.max(0, this.limits.getGlobalAmount() - globalLimit.getRolls());
+            }
+            if (this.limits.isPlayerAmountLimited()) {
+                playerLeft = playerLimit == null ? this.limits.getPlayerAmount() : Math.max(0, this.limits.getPlayerAmount() - playerLimit.getRolls());
+            }
+        }
+
+        if (globalLeft < 0 || playerLeft < 0) {
+            return Math.max(playerLeft, globalLeft);
+        }
+
+        return Math.min(playerLeft, globalLeft);
+>>>>>>> upstream/master
     }
 
     @Override
@@ -156,7 +282,11 @@ public abstract class AbstractReward implements Reward {
         if (!this.isRollable()) return false;
         if (!this.fitRequirements(player)) return false;
 
+<<<<<<< HEAD
         return this.getAvailableRolls(player) != 0;
+=======
+        return !this.isOnCooldown(player) && this.getAvailableRolls(player) != 0;
+>>>>>>> upstream/master
     }
 
     @Override
@@ -186,6 +316,7 @@ public abstract class AbstractReward implements Reward {
     }
 
     @Override
+<<<<<<< HEAD
     @NotNull
     public String getNameTranslated() {
         return NightMessage.asLegacy(this.getName());
@@ -198,6 +329,8 @@ public abstract class AbstractReward implements Reward {
     }
 
     @Override
+=======
+>>>>>>> upstream/master
     public double getWeight() {
         return this.weight;
     }
@@ -208,11 +341,19 @@ public abstract class AbstractReward implements Reward {
     }
 
     @NotNull
+<<<<<<< HEAD
     public ItemProvider getPreview() {
         return this.preview;
     }
 
     public void setPreview(@NotNull ItemProvider provider) {
+=======
+    public AdaptedItem getPreview() {
+        return this.preview;
+    }
+
+    public void setPreview(@NotNull AdaptedItem provider) {
+>>>>>>> upstream/master
         this.preview = provider;
     }
 
@@ -237,6 +378,7 @@ public abstract class AbstractReward implements Reward {
         this.broadcast = broadcast;
     }
 
+<<<<<<< HEAD
     @Override
     public void setPlaceholderApply(boolean placeholderApply) {
         this.placeholderApply = placeholderApply;
@@ -278,6 +420,15 @@ public abstract class AbstractReward implements Reward {
     @Override
     public void setGlobalLimits(@NotNull LimitValues globalLimits) {
         this.globalLimits = globalLimits;
+=======
+    @NotNull
+    public LimitValues getLimits() {
+        return this.limits;
+    }
+
+    public void setLimits(@NotNull LimitValues limitValues) {
+        this.limits = limitValues;
+>>>>>>> upstream/master
     }
 
     @Override

@@ -29,7 +29,11 @@ public class AnimationSpinner extends AbstractSpinner {
 
     @Override
     @NotNull
+<<<<<<< HEAD
     public ItemStack createItem() {
+=======
+    public ItemStack createItem(int slot) {
+>>>>>>> upstream/master
         return this.items.isEmpty() ? new ItemStack(Material.AIR) : Rnd.getByWeight(new ArrayList<>(this.items)).getItemStack();
     }
 }

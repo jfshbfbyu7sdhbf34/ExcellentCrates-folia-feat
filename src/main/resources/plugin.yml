@@ -3,6 +3,7 @@ version: '${project.version}'
 name: ExcellentCrates
 author: NightExpress
 desciption: Lightweight, powerful, feature-rich and highly customizable crates plugin.
+<<<<<<< HEAD
 depend:
   - nightcore
 softdepend:
@@ -12,3 +13,11 @@ softdepend:
   - packetevents
 api-version: 1.21
 folia-supported: true
+=======
+depend: [ nightcore ]
+softdepend:
+  - PlaceholderAPI
+  - ProtocolLib
+  - packetevents
+api-version: 1.21
+>>>>>>> upstream/master

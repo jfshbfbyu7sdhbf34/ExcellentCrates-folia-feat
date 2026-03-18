@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+<<<<<<< HEAD
 import su.nightexpress.excellentcrates.hologram.HologramHandler;
 import su.nightexpress.nightcore.util.text.NightMessage;
 
@@ -23,6 +24,15 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 public class HologramProtocolHandler implements HologramHandler {
+=======
+import su.nightexpress.excellentcrates.hologram.entity.FakeEntity;
+import su.nightexpress.nightcore.util.text.night.NightMessage;
+
+import java.util.*;
+import java.util.function.Consumer;
+
+public class HologramProtocolHandler extends AbstractHologramHandler {
+>>>>>>> upstream/master
 
     private final ProtocolManager protocolManager;
 
@@ -39,6 +49,7 @@ public class HologramProtocolHandler implements HologramHandler {
     }
 
     @Override
+<<<<<<< HEAD
     public void displayHolograms(@NotNull Player player, int entityID, boolean create, @NotNull EntityType type, @NotNull Location location, @NotNull String textLine) {
         Object component = WrappedChatComponent.fromJson(NightMessage.asJson(textLine)).getHandle();
 
@@ -62,16 +73,42 @@ public class HologramProtocolHandler implements HologramHandler {
         });
 
         if (create) this.sendPacket(player, spawnPacket);
+=======
+    public void sendHologramPackets(@NotNull Player player, @NotNull FakeEntity entity, boolean needSpawn, @NotNull String textLine) {
+        Object component = WrappedChatComponent.fromJson(NightMessage.asJson(textLine)).getHandle();
+
+        PacketContainer dataPacket = this.createMetadataPacket(entity.getId(), metadata -> {
+            metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(15, WrappedDataWatcher.Registry.get(Byte.class)), this.billboard);
+            metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(23, WrappedDataWatcher.Registry.getChatComponentSerializer()), component);
+            metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(24, WrappedDataWatcher.Registry.get(Integer.class)), this.lineWidth);
+            metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(25, WrappedDataWatcher.Registry.get(Integer.class)), this.backgroundColor);
+            metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(26, WrappedDataWatcher.Registry.get(Byte.class)), this.textOpacity);
+            metadata.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(27, WrappedDataWatcher.Registry.get(Byte.class)), this.textBitmask);
+        });
+
+        if (needSpawn) {
+            this.sendPacket(player, this.createSpawnPacket(entity));
+        }
+
+>>>>>>> upstream/master
         this.sendPacket(player, dataPacket);
     }
 
     @Override
+<<<<<<< HEAD
     public void destroyEntity(@NotNull Player player, @NotNull Set<Integer> idList) {
+=======
+    public void sendDestroyEntityPacket(@NotNull Player player, @NotNull Set<Integer> idList) {
+>>>>>>> upstream/master
         this.sendPacket(player, this.createDestroyPacket(idList));
     }
 
     @Override
+<<<<<<< HEAD
     public void destroyEntity(@NotNull Set<Integer> idList) {
+=======
+    public void sendDestroyEntityPacket(@NotNull Set<Integer> idList) {
+>>>>>>> upstream/master
         this.broadcastPacket(this.createDestroyPacket(idList));
     }
 
@@ -84,11 +121,21 @@ public class HologramProtocolHandler implements HologramHandler {
     }
 
     @NotNull
+<<<<<<< HEAD
     private PacketContainer createSpawnPacket(@NotNull EntityType entityType, @NotNull Location location, int entityID) {
         PacketContainer container = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
         container.getIntegers().write(0, entityID);
         container.getUUIDs().write(0, UUID.randomUUID());
         container.getEntityTypeModifier().write(0, entityType);
+=======
+    private PacketContainer createSpawnPacket(@NotNull FakeEntity entity) {
+        Location location = entity.getLocation();
+
+        PacketContainer container = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
+        container.getIntegers().write(0, entity.getId());
+        container.getUUIDs().write(0, UUID.randomUUID());
+        container.getEntityTypeModifier().write(0, EntityType.TEXT_DISPLAY);
+>>>>>>> upstream/master
         container.getDoubles().write(0, location.getX());
         container.getDoubles().write(1, location.getY());
         container.getDoubles().write(2, location.getZ());

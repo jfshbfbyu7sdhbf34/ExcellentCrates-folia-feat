@@ -55,13 +55,21 @@ public class CratesMenu extends ConfigMenu<CratesPlugin> {
             }
 
             Player player = viewer.getPlayer();
+<<<<<<< HEAD
             ItemStack icon = crate.getRawItem();
+=======
+            ItemStack icon = crate.getRawItemStack();
+>>>>>>> upstream/master
 
             ItemReplacer.create(icon).readMeta().trimmed().hideFlags()
                 .setDisplayName(this.crateName)
                 .setLore(this.crateLore)
                 .replace(crate.replacePlaceholders())
+<<<<<<< HEAD
                 .replace(GENERIC_KEYS, () -> NumberUtil.format(plugin.getKeyManager().getKeysAmount(player, crate)))
+=======
+                //.replace(GENERIC_KEYS, () -> NumberUtil.format(plugin.getKeyManager().getKeysAmount(player, crate)))
+>>>>>>> upstream/master
                 .writeMeta();
 
             MenuItem menuItem = new MenuItem(icon);
@@ -69,7 +77,11 @@ public class CratesMenu extends ConfigMenu<CratesPlugin> {
             menuItem.setOptions(ItemOptions.personalWeak(player));
             menuItem.setHandler((viewer1, event) -> {
                 ClickType clickType = ClickType.from(event);
+<<<<<<< HEAD
                 InteractType clickAction = Config.getCrateClickAction(clickType);
+=======
+                InteractType clickAction = null;//Config.getCrateClickAction(clickType);
+>>>>>>> upstream/master
                 if (clickAction == null) return;
 
                 this.runNextTick(() -> {

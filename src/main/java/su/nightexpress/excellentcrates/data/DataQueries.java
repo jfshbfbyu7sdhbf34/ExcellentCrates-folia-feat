@@ -2,7 +2,11 @@ package su.nightexpress.excellentcrates.data;
 
 import su.nightexpress.excellentcrates.crate.impl.Crate;
 import su.nightexpress.excellentcrates.data.crate.GlobalCrateData;
+<<<<<<< HEAD
 import su.nightexpress.excellentcrates.data.reward.RewardLimit;
+=======
+import su.nightexpress.excellentcrates.data.reward.RewardData;
+>>>>>>> upstream/master
 import su.nightexpress.excellentcrates.api.crate.Reward;
 import su.nightexpress.nightcore.db.sql.query.impl.DeleteQuery;
 import su.nightexpress.nightcore.db.sql.query.impl.InsertQuery;
@@ -41,7 +45,11 @@ public class DataQueries {
         }
     };
 
+<<<<<<< HEAD
     public static final Function<ResultSet, RewardLimit> REWARD_LIMIT_LOADER = resultSet -> {
+=======
+    public static final Function<ResultSet, RewardData> REWARD_LIMIT_LOADER = resultSet -> {
+>>>>>>> upstream/master
         try {
             String crateId = resultSet.getString(DataHandler.COLUMN_CRATE_ID.getName());
             String rewardId = resultSet.getString(DataHandler.COLUMN_REWARD_ID.getName());
@@ -50,7 +58,11 @@ public class DataQueries {
             int amount = resultSet.getInt(DataHandler.COLUMN_AMOUNT.getName());
             long resetDate = resultSet.getLong(DataHandler.COLUMN_RESET_DATE.getName());
 
+<<<<<<< HEAD
             return new RewardLimit(crateId, rewardId, holder, amount, resetDate);
+=======
+            return new RewardData(crateId, rewardId, holder, amount, resetDate);
+>>>>>>> upstream/master
         }
         catch (SQLException exception) {
             exception.printStackTrace();
@@ -79,6 +91,7 @@ public class DataQueries {
 
 
 
+<<<<<<< HEAD
     public static final InsertQuery<RewardLimit> REWARD_LIMIT_INSERT = new InsertQuery<RewardLimit>()
         .setValue(DataHandler.COLUMN_CRATE_ID, RewardLimit::getCrateId)
         .setValue(DataHandler.COLUMN_REWARD_ID, RewardLimit::getRewardId)
@@ -97,6 +110,26 @@ public class DataQueries {
         .whereIgnoreCase(DataHandler.COLUMN_HOLDER, WhereOperator.EQUAL, RewardLimit::getHolder)
         .whereIgnoreCase(DataHandler.COLUMN_CRATE_ID, WhereOperator.EQUAL, RewardLimit::getCrateId)
         .whereIgnoreCase(DataHandler.COLUMN_REWARD_ID, WhereOperator.EQUAL, RewardLimit::getRewardId);
+=======
+    public static final InsertQuery<RewardData> REWARD_LIMIT_INSERT = new InsertQuery<RewardData>()
+        .setValue(DataHandler.COLUMN_CRATE_ID, RewardData::getCrateId)
+        .setValue(DataHandler.COLUMN_REWARD_ID, RewardData::getRewardId)
+        .setValue(DataHandler.COLUMN_HOLDER, RewardData::getHolder)
+        .setValue(DataHandler.COLUMN_AMOUNT, limit -> String.valueOf(limit.getRolls()))
+        .setValue(DataHandler.COLUMN_RESET_DATE, limit -> String.valueOf(limit.getCooldownUntil()));
+
+    public static final UpdateQuery<RewardData> REWARD_LIMIT_UPDATE = new UpdateQuery<RewardData>()
+        .whereIgnoreCase(DataHandler.COLUMN_HOLDER, WhereOperator.EQUAL, RewardData::getHolder)
+        .whereIgnoreCase(DataHandler.COLUMN_CRATE_ID, WhereOperator.EQUAL, RewardData::getCrateId)
+        .whereIgnoreCase(DataHandler.COLUMN_REWARD_ID, WhereOperator.EQUAL, RewardData::getRewardId)
+        .setValue(DataHandler.COLUMN_AMOUNT, limit -> String.valueOf(limit.getRolls()))
+        .setValue(DataHandler.COLUMN_RESET_DATE, limit -> String.valueOf(limit.getCooldownUntil()));
+
+    public static final DeleteQuery<RewardData> REWARD_LIMIT_DELETE = new DeleteQuery<RewardData>()
+        .whereIgnoreCase(DataHandler.COLUMN_HOLDER, WhereOperator.EQUAL, RewardData::getHolder)
+        .whereIgnoreCase(DataHandler.COLUMN_CRATE_ID, WhereOperator.EQUAL, RewardData::getCrateId)
+        .whereIgnoreCase(DataHandler.COLUMN_REWARD_ID, WhereOperator.EQUAL, RewardData::getRewardId);
+>>>>>>> upstream/master
 
     public static final DeleteQuery<Crate> REWARD_LIMIT_DELETE_CRATE = new DeleteQuery<Crate>()
         .whereIgnoreCase(DataHandler.COLUMN_CRATE_ID, WhereOperator.EQUAL, Crate::getId);
