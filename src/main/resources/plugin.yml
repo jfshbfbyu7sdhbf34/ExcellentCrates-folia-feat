@@ -1,0 +1,14 @@
+main: su.nightexpress.excellentcrates.CratesPlugin
+version: '${project.version}'
+name: ExcellentCrates
+author: NightExpress
+desciption: Lightweight, powerful, feature-rich and highly customizable crates plugin.
+depend:
+  - nightcore
+softdepend:
+  - EconomyBridge
+  - PlaceholderAPI
+  - ProtocolLib
+  - packetevents
+api-version: 1.21
+folia-supported: true
